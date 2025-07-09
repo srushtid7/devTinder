@@ -1,26 +1,19 @@
 const express = require("express");
 
 const app = express(); //instance of express js application
+const { adminAuth, userAuth } = require("./middlewares/auth");
 
-app.use("/", (req, res, next) => {
-  console.log("handling first route handler");
-  //res.send("Handling / route");
-  next();
-}),
-  app.get(
-    "/user",
-    (req, res,next) => {
-      console.log("handling user route");
-      res.send("0th round handler"); //route handler
-      next();
-    },
-    (req, res) => {
-      res.send("1st round handler"); // one middleware
-    },
-    (req, res) => {
-      res.send("2nd round handler"); //another middleware
-    }
-  );
+app.use("/admin", adminAuth);
+app.get("/user", userAuth, (req, res) => {
+  res.send("User data sent!"); //admin middleware will not count for /user
+});
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All data sent!");
+});
+
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("User Deleted!");
+});
 
 app.listen(7777, () => {
   //takes port and callback function
