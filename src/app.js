@@ -1,23 +1,30 @@
 const express = require("express");
+const connectDB = require("./config/database");
+const app = express();
+const User = require("./models/user");
 
-const app = express(); //instance of express js application
-const { adminAuth, userAuth } = require("./middlewares/auth");
-
-app.use("/admin", adminAuth);
-app.get("/user", userAuth, (req, res) => {
-  res.send("User data sent!"); //admin middleware will not count for /user
-});
-app.get("/admin/getAllData", (req, res) => {
-  throw new Error("djshfg");
-  res.send("All data sent!");
-});
-
-app.use("/",(err,req,res,next)=>{
-  if(err){
-    res.status(500).send("something went wrong");
+app.post("/signup", async (req, res) => {
+  const userObj = {
+    firstName: "Virat",
+    lastName: "Kohli",
+    emailId: "Vir123@gmail.com",
+    password: "Virat@123",
+  };
+  try {
+    const user = new User(userObj);
+    await user.save();
+    res.send("User Added Successfully!");
+  } catch (err) {
+    res.status(400).send("Error saving the user:" + err.message);
   }
-})
-app.listen(7777, () => {
-  //takes port and callback function
-  console.log("Server is successfully running on 7777!");
 });
+
+connectDB()
+  .then(() => {
+    console.log("Database connection establised....");
+    app.listen(7777, () => {
+      //takes port and callback function
+      console.log("Server is successfully running on 7777!");
+    });
+  })
+  .catch((err) => console.error("Database couldn't connect!!,", err));
