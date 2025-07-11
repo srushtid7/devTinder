@@ -3,15 +3,19 @@ const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 
+app.use(express.json()); // this middleware converts all the req into json
+
 app.post("/signup", async (req, res) => {
+
+  console.log(req.body);
   const userObj = {
-    firstName: "Virat",
-    lastName: "Kohli",
-    emailId: "Vir123@gmail.com",
-    password: "Virat@123",
+    firstName: "MS",
+    lastName: "Dhoni",
+    emailId: "msdhoni@gmail.com",
+    password: "dhonibhai",
   };
   try {
-    const user = new User(userObj);
+    const user = new User(userObj);  //new instance of User Model which is imported from models
     await user.save();
     res.send("User Added Successfully!");
   } catch (err) {
